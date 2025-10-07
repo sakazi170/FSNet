@@ -4,8 +4,12 @@
 Please download BraTS 2020 data according to https://www.med.upenn.edu/cbica/brats2020/data.html.
 ### Training
 #### Training on the entire BraTS training set
-python train.py --model FSNet  --mixed --trainset
+```bash
+python train.py --model FSNet --mixed --trainset
+
 #### Breakpoint continuation for training
-python train.py --model FSNet  --mixed --trainset --cp checkpoint
+```bash
+python train.py --model FSNet --mixed --trainset --cp checkpoint
+
 ### Inference
 python test.py --model FSNet --tta --labels --post_process --cp checkpoint
