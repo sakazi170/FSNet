@@ -48,7 +48,7 @@ def main():
     args = parse_args()
     torch.backends.cudnn.benchmark = args.benchmark
 
-    # Add SlimUNETR to the model dictionary
+  
     model_dict = {
         'FSNet': bl2_usb_pfmf_saff_fim,
         'FSNet1': bl2_usb_pfmf1_saff_fim,
