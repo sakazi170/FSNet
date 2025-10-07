@@ -11,11 +11,7 @@ from utils.metric import calculate_metrics_with_debug
 from utils.test_data_loader import BraTSDataset, post_process_prediction
 
 def extract_path_from_checkpoint(checkpoint_path):
-    """
-    Extract directory path from checkpoint path
-    Example: "/data/qazisami/models/my_model_2/checkpoints/brats2020/bl4_add/train_only_b1/bl4_add_400_0.1496.pkl"
-    Returns: "brats2020/bl4_add/train_only_b1"
-    """
+
     # Split the path and find the 'checkpoints' directory
     path_parts = checkpoint_path.split('/')
 
@@ -37,10 +33,7 @@ def extract_path_from_checkpoint(checkpoint_path):
 
 
 def extract_model_name_from_checkpoint(checkpoint_path):
-    """
-    Extract model name from checkpoint filename
-    Example: "/path/to/bl4_add_400_0.1496.pkl" -> "bl4_add_400_0.1496"
-    """
+
     # Get the filename without extension
     filename = os.path.basename(checkpoint_path)
     model_name = os.path.splitext(filename)[0]  # Remove .pkl extension
@@ -85,13 +78,12 @@ class TestTimeAugmentation:
         return reversed_preds
 
 from models.Networks import (bl2_usb_pfmf_saff_fim, bl2_usb_pfmf1_saff_fim, bl2_usb_pfmf2_saff_fim)
-Checkpoint_path = "/data/qazisami/models/my_model_2/checkpoints/brats2020/base_light_FAM/train_only/base_light_FAM_400_0.1224.pkl"
 
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset', default="brats2020", help='dataset name')
     parser.add_argument('--model', type=str, default='FSNet', help='network for training')
-    parser.add_argument('--cp', type=str, default=Checkpoint_path, help='model checkpoint for loading model')
+    parser.add_argument('--cp', type=str, default=' ', help='model checkpoint for loading model')
     parser.add_argument('--gpu', type=str, default='3', help='GPU ID')
     parser.add_argument('--post_process', action="store_true", help='whether to use post processing')
     parser.add_argument('--save_pred', action="store_true", help='save predictions')
