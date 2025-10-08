@@ -5,8 +5,6 @@ import sys
 
 from modules.blocks import L_EB, L_BNB, L_DB
 from modules.pfmf import PFMF
-from modules.pfmf1 import PFMF1
-from modules.pfmf2 import PFMF2
 from modules.ultraSB import usb
 from modules.featureIM import FIM, FIM_wo_SAB, FIM_wo_CRB, FIM_wo_IB
 from modules.saff import SAFF, SAFF11, SAFF21
@@ -611,132 +609,7 @@ class bl2_usb_pfmf_saff21_fim(nn.Module):
         out = self.final(c8_upsampled)
         return out
 
-class bl2_usb_pfmf1_saff_fim(nn.Module):
-    def __init__(self, img_h, img_w, img_d, in_channels=4, num_classes=4):
-        super(bl2_usb_pfmf1_saff_fim, self).__init__()
 
-        self.ffm = PFMF1(target_channels=16)
-        self.fim_level1 = FIM(encoder_channels=[16, 32, 48, 64], target_channels=64, r=4)
-        self.fim_level2 = FIM(encoder_channels=[16, 32, 48, 64], target_channels=48, r=4)
-        self.fim_level3 = FIM(encoder_channels=[16, 32, 48, 64], target_channels=32, r=4)
-        self.fim_level4 = FIM(encoder_channels=[16, 32, 48, 64], target_channels=16, r=4)
-
-        self.pool = nn.MaxPool3d(kernel_size=2, stride=2)
-        self.enc1 = usb(16, 32)
-        self.enc2 = usb(32, 48)
-        self.enc3 = usb(48, 64)
-
-        self.bottleneck = SAFF(encoder_channels=[16, 32, 48, 64], embed_dim=64, target_size=(8, 8, 8))
-
-        self.dec1 = usb(64 + 64, 64)
-        self.upconv1 = nn.ConvTranspose3d(64, 48, kernel_size=2, stride=2)
-        self.dec2 = usb(48 + 48, 48)
-        self.upconv2 = nn.ConvTranspose3d(48, 32, kernel_size=2, stride=2)
-        self.dec3 = usb(32 + 32, 32)
-        self.upconv3 = nn.ConvTranspose3d(32, 16, kernel_size=2, stride=2)
-        self.dec4 = usb(16 + 16, 16)
-        self.final_upsample = nn.ConvTranspose3d(16, 16, kernel_size=2, stride=2)
-        self.final = nn.Conv3d(16, num_classes, kernel_size=1)
-
-    def forward(self, t1, t1ce, t2, flair):
-        fused_features = self.ffm(t1, t1ce, t2, flair)  # [B, 16, 64, 64, 64]
-        d0 = self.pool(fused_features)  # [B, 16, 32, 32, 32]
-
-        e1 = self.enc1(d0)  # [B, 32, 32, 32, 32]
-        d1 = self.pool(e1)  # [B, 32, 16, 16, 16]
-        e2 = self.enc2(d1)  # [B, 48, 16, 16, 16]
-        d2 = self.pool(e2)  # [B, 48, 8, 8, 8]
-        e3 = self.enc3(d2)  # [B, 64, 8, 8, 8]
-
-        encoder_features = [fused_features, e1, e2, e3]
-        bottleneck = self.bottleneck(encoder_features)
-
-        fim_features1 = self.fim_level1(encoder_features, (8, 8, 8))
-        combined1 = torch.cat([bottleneck, fim_features1], dim=1)
-        c5 = self.dec1(combined1)
-
-        up6 = self.upconv1(c5)
-        fim_features2 = self.fim_level2(encoder_features, (16, 16, 16))
-        combined2 = torch.cat([up6, fim_features2], dim=1)
-        c6 = self.dec2(combined2)
-
-        up7 = self.upconv2(c6)
-        fim_features3 = self.fim_level3(encoder_features, (32, 32, 32))
-        combined3 = torch.cat([up7, fim_features3], dim=1)
-        c7 = self.dec3(combined3)
-
-        up8 = self.upconv3(c7)
-        fim_features4 = self.fim_level4(encoder_features, (64, 64, 64))
-        combined4 = torch.cat([up8, fim_features4], dim=1)
-        c8 = self.dec4(combined4)
-
-        c8_upsampled = self.final_upsample(c8)
-        out = self.final(c8_upsampled)
-        return out
-
-
-class bl2_usb_pfmf2_saff_fim(nn.Module):
-    def __init__(self, img_h, img_w, img_d, in_channels=4, num_classes=4):
-        super(bl2_usb_pfmf2_saff_fim, self).__init__()
-
-        self.ffm = PFMF2(target_channels=16)
-        self.fim_level1 = FIM(encoder_channels=[16, 32, 48, 64], target_channels=64, r=4)
-        self.fim_level2 = FIM(encoder_channels=[16, 32, 48, 64], target_channels=48, r=4)
-        self.fim_level3 = FIM(encoder_channels=[16, 32, 48, 64], target_channels=32, r=4)
-        self.fim_level4 = FIM(encoder_channels=[16, 32, 48, 64], target_channels=16, r=4)
-
-        self.pool = nn.MaxPool3d(kernel_size=2, stride=2)
-        self.enc1 = usb(16, 32)
-        self.enc2 = usb(32, 48)
-        self.enc3 = usb(48, 64)
-
-        self.bottleneck = SAFF(encoder_channels=[16, 32, 48, 64], embed_dim=64, target_size=(8, 8, 8))
-
-        self.dec1 = usb(64 + 64, 64)
-        self.upconv1 = nn.ConvTranspose3d(64, 48, kernel_size=2, stride=2)
-        self.dec2 = usb(48 + 48, 48)
-        self.upconv2 = nn.ConvTranspose3d(48, 32, kernel_size=2, stride=2)
-        self.dec3 = usb(32 + 32, 32)
-        self.upconv3 = nn.ConvTranspose3d(32, 16, kernel_size=2, stride=2)
-        self.dec4 = usb(16 + 16, 16)
-        self.final_upsample = nn.ConvTranspose3d(16, 16, kernel_size=2, stride=2)
-        self.final = nn.Conv3d(16, num_classes, kernel_size=1)
-
-    def forward(self, t1, t1ce, t2, flair):
-        fused_features = self.ffm(t1, t1ce, t2, flair)  # [B, 16, 64, 64, 64]
-        d0 = self.pool(fused_features)  # [B, 16, 32, 32, 32]
-
-        e1 = self.enc1(d0)  # [B, 32, 32, 32, 32]
-        d1 = self.pool(e1)  # [B, 32, 16, 16, 16]
-        e2 = self.enc2(d1)  # [B, 48, 16, 16, 16]
-        d2 = self.pool(e2)  # [B, 48, 8, 8, 8]
-        e3 = self.enc3(d2)  # [B, 64, 8, 8, 8]
-
-        encoder_features = [fused_features, e1, e2, e3]
-        bottleneck = self.bottleneck(encoder_features)
-
-        fim_features1 = self.fim_level1(encoder_features, (8, 8, 8))
-        combined1 = torch.cat([bottleneck, fim_features1], dim=1)
-        c5 = self.dec1(combined1)
-
-        up6 = self.upconv1(c5)
-        fim_features2 = self.fim_level2(encoder_features, (16, 16, 16))
-        combined2 = torch.cat([up6, fim_features2], dim=1)
-        c6 = self.dec2(combined2)
-
-        up7 = self.upconv2(c6)
-        fim_features3 = self.fim_level3(encoder_features, (32, 32, 32))
-        combined3 = torch.cat([up7, fim_features3], dim=1)
-        c7 = self.dec3(combined3)
-
-        up8 = self.upconv3(c7)
-        fim_features4 = self.fim_level4(encoder_features, (64, 64, 64))
-        combined4 = torch.cat([up8, fim_features4], dim=1)
-        c8 = self.dec4(combined4)
-
-        c8_upsampled = self.final_upsample(c8)
-        out = self.final(c8_upsampled)
-        return out
 
 
 
