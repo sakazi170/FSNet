@@ -1,10 +1,12 @@
-# FSNet Frequency-Inspired and Scale-Adaptive Lightweight Network for Multi-modal MRI Brain Tumor Segmentation
+# FSNet: Frequency-Inspired and Scale-Adaptive Lightweight Network for Multi-modal MRI Brain Tumor Segmentation
 
 ## Methods
 In this paper, we propose a novel *Frequency-Inspired and Scale-Adaptive Lightweight Network* that integrates CNN-based frequency decomposition and Transformer-inspired global-local modeling to synchronously capture complementary spectral features across MRI modalities and scale-adaptive contextual features to cope with spectral heterogeneity, tumor size variability, and semantic gap challenges in multi-modal brain tumor segmentation.
 
 ### Network Framework
 ![network](https://github.com/sakazi170/FSNet/blob/main/img/figure2.png)
+
+### If you use our code, please cite the paper
 
 
 ## Usage
