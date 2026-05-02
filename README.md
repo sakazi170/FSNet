@@ -4,7 +4,8 @@
 In this paper, we propose a novel *Frequency-Inspired and Scale-Adaptive Lightweight Network* that integrates CNN-based frequency decomposition and Transformer-inspired global-local modeling to synchronously capture complementary spectral features across MRI modalities and scale-adaptive contextual features to cope with spectral heterogeneity, tumor size variability, and semantic gap challenges in multi-modal brain tumor segmentation.
 
 ### Network Framework
-![network](https://github.com/jiangyu945/S2CA-Net/blob/c4f6b12edd45bc8e1a33e1d1883d6c1d611fd5e3/img/Framework.png)
+![network](https://github.com/sakazi170/FSNet/blob/main/img/figure2.png)
+
 
 ## Usage
 ### Data Preparation
