@@ -8,7 +8,7 @@ In this paper, we propose a novel *Frequency-Inspired and Scale-Adaptive Lightwe
 
 
 
-## Usage (#### If you use our code, please cite the paper)
+## Usage (If you use our code, please cite the paper)
 ### Installation
 Install the necessary python packages as defined in environment.yaml. We recommend using conda. You can create the environment using
 ```shell
