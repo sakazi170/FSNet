@@ -6,10 +6,9 @@ In this paper, we propose a novel *Frequency-Inspired and Scale-Adaptive Lightwe
 ### Network Framework
 ![network](https://github.com/sakazi170/FSNet/blob/main/img/figure2.png)
 
-### If you use our code, please cite the paper
 
 
-## Usage
+## Usage (#### If you use our code, please cite the paper)
 ### Installation
 Install the necessary python packages as defined in environment.yaml. We recommend using conda. You can create the environment using
 ```shell
