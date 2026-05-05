@@ -10,6 +10,12 @@ In this paper, we propose a novel *Frequency-Inspired and Scale-Adaptive Lightwe
 
 
 ## Usage
+### Installation
+Install the necessary python packages as defined in environment.yaml. We recommend using conda. You can create the environment using
+```shell
+conda env create -f environment.yml
+```
+If you run into problems, you can try using different versions of these packages.
 ### Data Preparation
 Please download BraTS 2020, BraTS 2021 and BraTS 2023-MEN data according to https://www.med.upenn.edu/cbica/brats2020/registration.html,  https://www.cancerimagingarchive.net/analysis-result/rsna-asnr-miccai-brats-2021/, and https://www.synapse.org/Synapse:syn51156910/wiki/627000. 
 Unzip downloaded data at `./dataset` folder (please create one) and remove all the csv files in the folder, or it will cause errors.
